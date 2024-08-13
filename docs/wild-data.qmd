@@ -1,0 +1,85 @@
+---
+title: "Wild Data"
+author: "Matteo Torres"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| message: FALSE
+# load packages
+library(tidyverse)
+library(here)
+library(janitor)
+```
+
+```{r}
+# read file
+mack_verts <- read.csv(here::here("data", "AS00601.csv"))
+mack_verts
+```
+
+```{r}
+# lower snake case
+mack_verts <- mack_verts %>%
+  janitor::clean_names()
+mack_verts
+```
+
+```{r}
+# exercises
+mc_wt_5 <- mack_verts$weight[5]
+mc_wt_5 # 6.9
+
+mc_length_8_20 <- mack_verts$length1[8:20]
+mc_length_8_20
+
+mc_dates <- mack_verts$sampledate
+mc_dates
+```
+
+```{r}
+# make a salamander subset
+mc_salamanders<- mack_verts %>%
+  filter(species == "DITE")
+mc_salamanders
+```
+
+```{r}
+# make a scatterplot of salamander length x weight
+salamander_size <- ggplot(data= mc_salamanders, aes(x= length1, y= weight, color= length1)) +
+  geom_point(alpha=0.5, size= 0.8) +
+  scale_color_gradient(low= "black", high= "red") +
+  theme_classic() +
+  labs(title= "DITE Salamanders", x= "Snout-Vent Length (mm)", y= "Weight (g)") + 
+  theme(legend.position = "none")
+```
+
+```{r}
+ggsave(here::here("figs", "salamander_size.png"), width = 6, height= 6)
+```
+
+```{r}
+# make a trout subset
+mc_trout <- mack_verts %>%
+  filter(species == "ONCL")
+mc_trout
+```
+
+```{r}
+# make a scatterplot
+cutthroat_size<- ggplot(data= mc_trout, aes(x= length1, y= weight, color= length1)) + 
+  geom_point(alpha= 0.5, size= 0.8) +
+  scale_color_gradient(low= "black", high= "red") +
+  theme_classic() + 
+  labs(title= "ONCL Trout", x= "Snout-Vent Length (mm)", y= "Weight (g)") +
+  theme(legend.position = "none")
+  
+cutthroat_size
+```
+
+```{r}
+ggsave(here::here("figs", "cutthroat_size.png"), width= 6, height= 6)
+```
+
